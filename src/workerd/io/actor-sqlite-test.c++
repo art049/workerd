@@ -414,8 +414,6 @@ KJ_TEST("tells alarm handler to cancel when committed alarm is empty") {
 
 KJ_TEST("tells alarm handler to cancel when handler alarm is later than committed alarm") {
   ActorSqliteTest test;
-  util::Autogate::initAutogateNamesForTest({});
-  KJ_DEFER(util::Autogate::deinitAutogate());
 
   // Initialize alarm state to 1ms.
   test.setAlarm(oneMs);

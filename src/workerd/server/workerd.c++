@@ -754,6 +754,10 @@ class CliMain final: public SchemaFileImpl::ErrorReporter {
         "<const-name>", CLI_METHOD(setConstName));
   }
 
+  bool shouldEnableAllAutogates() {
+    return getenv("WORKERD_ENABLE_ALL_AUTOGATES") != nullptr;
+  }
+
   kj::MainBuilder& addServeOrTestOptions(kj::MainBuilder& builder) {
     return builder
         .addOptionWithArg({'d', "directory-path"}, CLI_METHOD(overrideDirectory), "<name>=<path>",
@@ -1077,7 +1081,11 @@ class CliMain final: public SchemaFileImpl::ErrorReporter {
     mod.setPythonModule("def test():\n pass");
     config = configBuilder.asReader();
     configOwner = kj::mv(builder);
-    util::Autogate::initAutogate(getConfig().getAutogates());
+    if (shouldEnableAllAutogates()) {
+      util::Autogate::initAllAutogates();
+    } else {
+      util::Autogate::initAutogate(getConfig().getAutogates());
+    }
   }
 
   void watch() {
@@ -1160,7 +1168,11 @@ class CliMain final: public SchemaFileImpl::ErrorReporter {
     // We'll fail at getConfig() if there are multiple top level Config objects.
     // The error message says that you have to specify which config to use, but
     // it's not clear that there is any mechanism to do that.
-    util::Autogate::initAutogate(getConfig().getAutogates());
+    if (shouldEnableAllAutogates()) {
+      util::Autogate::initAllAutogates();
+    } else {
+      util::Autogate::initAutogate(getConfig().getAutogates());
+    }
   }
 
   void setConstName(kj::StringPtr name) {
