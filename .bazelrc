@@ -286,7 +286,7 @@ build:linux --copt="-fdata-sections" --host_copt="-fdata-sections"
 # On Linux, use clang lld.
 build:linux --linkopt="-fuse-ld=lld"
 
-# LLVM 20 warning.
+# Disable LLVM 20 warning about unused cli argument "-c".
 build:linux --copt='-Wno-unused-command-line-argument' --host_copt='-Wno-unused-command-line-argument'
 
 #
